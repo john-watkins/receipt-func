@@ -1,0 +1,12 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://rp1.local:8080
+functions:
+  gmaillabelexport:
+    lang: aspnet
+    handler: ./function
+    image: swatco/gmaillabelexport:latest
+    environment:
+      write_debug: true
+      combine_output: false
