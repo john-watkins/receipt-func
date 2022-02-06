@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "function": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
