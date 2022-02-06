@@ -10,12 +10,7 @@ namespace OpenFaaS
         public static void AddFuncServices(this IServiceCollection services)
         {
             services.AddScoped<IAwsS3, AwsS3>();
-            services.AddScoped<IMailRepo, MailRepo>(config =>
-            {
-                IOpenFaasSecretsConfigurationProvider provider = config.GetRequiredService<IOpenFaasSecretsConfigurationProvider>();
-                
-                IMailRepo repo = new MailRepo()
-            });
+            services.AddScoped<IMailRepo, MailRepo>();
         }
     }
 }

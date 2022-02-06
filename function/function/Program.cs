@@ -15,11 +15,11 @@ Runner.Run(args, builder =>
     builder.Services.ConfigureFunction().AddNewtonsoftJson();
     builder.Logging.AddJsonConsole();
     builder.Configuration
-        .AddUserSecrets<Program>(true);        
+        .AddUserSecrets<Program>(true)
+        .AddOpenFaaSSecrets();        
         
     // add your services to the container
-    builder.Services.AddFuncServices();
-    builder.Services.AddOpenFaaSSecretService();
+    builder.Services.AddFuncServices();    
 }, app =>
 {
     // configure the HTTP request pipeline

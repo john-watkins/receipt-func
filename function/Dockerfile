@@ -13,6 +13,7 @@ WORKDIR /source/faas/function
 COPY function/function.csproj .
 COPY GoogleApi/GoogleApi.csproj .
 COPY AwsApi/AwsApi.csproj .
+COPY OpenFaas.Secrets/OpenFaas.Secrets.csproj .
 
 # restore packages
 COPY add-nuget-config.sh /tmp/
@@ -52,7 +53,7 @@ ENV mode="http"
 ENV upstream_url="http://localhost:9000"
 ENV ASPNETCORE_URLS=http://+:9000
 
-ENV exec_timeout="30s"
+ENV exec_timeout="3600s"
 ENV write_timeout="15s"
 ENV read_timeout="15s"
 

@@ -7,11 +7,8 @@ using GoogleApi.domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using MimeKit.IO;
-using MimeKit.IO.Filters;
 using Newtonsoft.Json;
 using System.Net.Mail;
-using System.Text;
 
 namespace GoogleApi.mail
 {
@@ -26,6 +23,8 @@ namespace GoogleApi.mail
         public MailRepo(IConfiguration config, ILogger<MailRepo> log)
         {
             _config = config;
+            string json = _config.GetSection("receipt-func-secrets:google_cloud").Value;
+            log.LogInformation(json);
             _config.Bind("receipt-func-secrets:google_cloud", _googleCloudApiConfig);
             _log = log;
         }
