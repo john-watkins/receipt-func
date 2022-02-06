@@ -5,6 +5,7 @@ using Google.Apis.Services;
 using Google.Apis.Util;
 using GoogleApi.domain;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.IO;
 using MimeKit.IO.Filters;
@@ -20,11 +21,13 @@ namespace GoogleApi.mail
         static string ApplicationName = "receipt-func";
         private readonly IConfiguration _config;
         private GoogleCloudApiConfig _googleCloudApiConfig = new GoogleCloudApiConfig();
+        private readonly ILogger _log;
 
-        public MailRepo(IConfiguration config)
+        public MailRepo(IConfiguration config, ILogger<MailRepo> log)
         {
             _config = config;
-            _config.Bind("google_cloud", _googleCloudApiConfig);
+            _config.Bind("receipt-func-secrets:google_cloud", _googleCloudApiConfig);
+            _log = log;
         }
 
         private GmailService GetServiceForUser(string userId)

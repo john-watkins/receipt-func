@@ -23,7 +23,7 @@ namespace AwsApi
         public AwsS3(IConfiguration config)
         {
             _config = config;
-            _config.Bind("aws", _awsApiConfig);
+            _config.Bind("receipt-func-secrets:aws", _awsApiConfig);
         }
 
         public async Task UploadFileToS3(byte[] file, string name, DateTime created)

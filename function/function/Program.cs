@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenFaas.Secrets;
 using OpenFaaS;
 using OpenFaaS.Hosting;
 using System.Net;
@@ -14,11 +15,11 @@ Runner.Run(args, builder =>
     builder.Services.ConfigureFunction().AddNewtonsoftJson();
     builder.Logging.AddJsonConsole();
     builder.Configuration
-        .AddUserSecrets<Program>()
-        .AddOpenFaaSSecret("receipt-func-secrets");
+        .AddUserSecrets<Program>(true);        
         
     // add your services to the container
-    builder.Services.AddCustomServices();
+    builder.Services.AddFuncServices();
+    builder.Services.AddOpenFaaSSecretService();
 }, app =>
 {
     // configure the HTTP request pipeline

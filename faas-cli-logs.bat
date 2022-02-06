@@ -1,0 +1,1 @@
+faas-cli logs gmaillabelexport --gateway http://rp1.local:8080

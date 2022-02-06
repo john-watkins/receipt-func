@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Configuration;
+using OpenFaaS.Configuration;
 
 namespace OpenFaas.Secrets
 {
-    public static class SecretsConfigurationExtensions
+    internal static class SecretsConfigurationExtensions
     {
         public static IConfigurationBuilder AddOpenFaaSSecrets( this IConfigurationBuilder configurationBuilder )
         {

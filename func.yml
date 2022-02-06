@@ -7,6 +7,8 @@ functions:
     lang: dockerfile
     handler: ./function
     image: swatco/gmaillabelexport:latest
+    secrets:
+      - receipt-func-secrets
     environment:
       write_debug: true
       combine_output: false

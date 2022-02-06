@@ -10,24 +10,24 @@ namespace OpenFaas.Secrets
 
         public override void Load()
         {
-            if ( !Directory.Exists( secretsPath ) )
+            if (!Directory.Exists(secretsPath))
             {
                 return;
             }
 
             try
             {
-                var secrets = Directory.GetFiles( secretsPath );
+                var secrets = Directory.GetFiles(secretsPath);
 
-                foreach ( var secret in secrets )
+                foreach (var secret in secrets)
                 {
-                    var secretName = string.Concat( "_secret_", Path.GetFileName( secret ) );
-                    var secretValue = File.ReadAllBytes( secret );
-
-                    Data.Add( secretName, Convert.ToBase64String( secretValue ) );
+                    var secretName = Path.GetFileName(secret);
+                    var secretValue = File.ReadAllBytes(secret);
+                    var str = System.Text.Encoding.Default.GetString(secretValue);
+                    Data.Add(secretName, str);
                 }
             }
-            catch ( Exception )
+            catch (Exception)
             { }
         }
     }
