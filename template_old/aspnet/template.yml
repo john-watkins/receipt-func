@@ -1,4 +1,0 @@
-language: aspnet
-fprocess: ./function
-welcome_message: |
-  You have created a C# function using ASPNET Functions v2.0.
