@@ -23,8 +23,6 @@ namespace GoogleApi.mail
         public MailRepo(IConfiguration config, ILogger<MailRepo> log)
         {
             _config = config;
-            string json = _config.GetSection("receipt-func-secrets:google_cloud").Value;
-            log.LogInformation(json);
             _config.Bind("receipt-func-secrets:google_cloud", _googleCloudApiConfig);
             _log = log;
         }
@@ -52,9 +50,23 @@ namespace GoogleApi.mail
 
         }
 
-        public async Task<List<EmailMessage>> GetEmailMessages(string userId, string labelId)
+        private async Task<string> GetLableId(GmailService gmailSvc, string userId, string label)
+        {
+
+            var listRequest = gmailSvc.Users.Labels.List(userId);
+            ListLabelsResponse listResponse = await listRequest.ExecuteAsync();
+            var tlable = listResponse.Labels.Where(x => x.Name.Equals(label, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            if (tlable != null)
+            {
+                return tlable.Id;
+            }
+            return "";
+        }
+
+        public async Task<List<EmailMessage>> GetEmailMessages(string userId, string label)
         {
             var gmailSvc = GetServiceForUser(userId);
+            string labelId = await GetLableId(gmailSvc, userId, label);
             var listRequest = gmailSvc.Users.Messages.List(userId);
             listRequest.LabelIds = new Repeatable<string>(new string[] { labelId });
             listRequest.MaxResults = 20;
@@ -79,21 +91,21 @@ namespace GoogleApi.mail
                 var msg = await detailRequest.ExecuteAsync();
                 string converted = msg.Raw.Replace('-', '+');
                 converted = converted.Replace('_', '/');
-                byte[] decodedByte = Convert.FromBase64String(converted);                
+                byte[] decodedByte = Convert.FromBase64String(converted);
                 using (var stream = new MemoryStream(decodedByte))
                 {
                     // Convert to MimeKit from GMail
                     // Load a MimeMessage from a stream
-                    var mkitMsg = await MimeMessage.LoadAsync(stream);                    
+                    var mkitMsg = await MimeMessage.LoadAsync(stream);
                     EmailMessage emailMessage = new EmailMessage
                     {
-                        Raw = decodedByte                        
+                        Raw = decodedByte
                     };
                     BuildMessage(mkitMsg, emailMessage);
-                    string fileName = $"{emailMessage.From}_{emailMessage.Created.ToString("yyyy-MM-dd")}_{mkitMsg.MessageId}.eml";                    
-                    emailMessage.FileName = fileName;                    
+                    string fileName = $"{emailMessage.From}_{emailMessage.Created.ToString("yyyy-MM-dd")}_{mkitMsg.MessageId}.eml";
+                    emailMessage.FileName = fileName;
                     emailMessages.Add(emailMessage);
-                }                
+                }
             }
             return emailMessages;
         }

@@ -34,19 +34,7 @@ namespace OpenFaas.Secrets
                 using (var stream = File.OpenRead(secretFile))
                 {
                     base.Load(stream);
-                }
-                    
-                Console.WriteLine($"SecretsConfigurationProvider: Configuration data hash: {JsonConvert.SerializeObject(Data)}");
-                //var secretName = Path.GetFileName(secret);
-                //var secretValue = File.ReadAllBytes(secret);
-                //var str = System.Text.Encoding.Default.GetString(secretValue);
-                //JsonConfigurationFileParser
-                //    Console.WriteLine(str);
-                //Data.Add(secretName, str);
-                //foreach (var secret in secrets)
-                //{
-                    
-                //}
+                }                                                    
             }
             catch (Exception)
             { }
