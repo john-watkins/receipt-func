@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using OpenFaas.Secrets;
 using OpenFaaS;
 using OpenFaaS.Hosting;
+using System;
 using System.Net;
 
 Runner.Run(args, builder =>
@@ -16,10 +17,10 @@ Runner.Run(args, builder =>
     builder.Logging.AddJsonConsole();
     builder.Configuration
         .AddUserSecrets<Program>(true)
-        .AddOpenFaaSSecrets();        
-        
+        .AddOpenFaaSSecrets();
+
     // add your services to the container
-    builder.Services.AddFuncServices();    
+    builder.Services.AddFuncServices();
 }, app =>
 {
     // configure the HTTP request pipeline
@@ -36,11 +37,14 @@ Runner.Run(args, builder =>
         {
             throw new System.Exception("Error reading gmail query json");
         }
-        var msgs = await mailRepo.GetEmailMessages(request.Email, request.GmailLabel);
+        DateTime dtNow = DateTime.Now;
+        DateTime lastSync = LastSyncHelper.GetLastSync();
+        var msgs = await mailRepo.GetEmailMessages(request.Email, request.GmailLabel, lastSync);
         foreach (var item in msgs)
         {
             await s3.UploadFileToS3(item.Raw, item.FileName, item.Created);
         }
+        LastSyncHelper.WriteLastSync(dtNow);
         await context.Response.WriteAsJsonAsync(new
         {
             Message = $"Sucessfully uploaded email files (.eml) to S3 bucket for {request.Email}, label: {request.GmailLabel}"
@@ -49,11 +53,14 @@ Runner.Run(args, builder =>
 
     app.MapGet("/mail", async (HttpContext context, IMailRepo mailRepo, IAwsS3 s3) =>
     {
-        var msgs = await mailRepo.GetEmailMessages("john.watkins@springdox.com", "Label_4148684280959301756");
+        DateTime dtNow = DateTime.Now;
+        DateTime lastSync = LastSyncHelper.GetLastSync();
+        var msgs = await mailRepo.GetEmailMessages("john.watkins@springdox.com", "receipts", lastSync);
         foreach (var item in msgs)
         {
             await s3.UploadFileToS3(item.Raw, item.FileName, item.Created);
         }
+        LastSyncHelper.WriteLastSync(dtNow);
         return msgs;
     });
 

@@ -10,11 +10,15 @@
 
   <ItemGroup>
     <None Remove="appSettings.json" />
+    <None Remove="last_sync.txt" />
     <None Remove="secrets-google-cloud.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="last_sync.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

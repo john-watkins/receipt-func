@@ -63,16 +63,18 @@ namespace GoogleApi.mail
             return "";
         }
 
-        public async Task<List<EmailMessage>> GetEmailMessages(string userId, string label)
+        public async Task<List<EmailMessage>> GetEmailMessages(string userId, string label, DateTime from)
         {
             var gmailSvc = GetServiceForUser(userId);
             string labelId = await GetLableId(gmailSvc, userId, label);
             var listRequest = gmailSvc.Users.Messages.List(userId);
+            listRequest.Q = $"after:{from.ToString("yyyy/MM/dd")} before:{DateTime.Now.AddDays(1).ToString("yyyy/MM/dd")}";
             listRequest.LabelIds = new Repeatable<string>(new string[] { labelId });
             listRequest.MaxResults = 20;
             ListMessagesResponse listResponse = await listRequest.ExecuteAsync();
             List<Message> messages = new List<Message>();
             List<EmailMessage> emailMessages = new List<EmailMessage>();
+            if (listResponse.Messages == null) return emailMessages;
             messages.AddRange(listResponse.Messages);
             while (!string.IsNullOrEmpty(listResponse.NextPageToken))
             {

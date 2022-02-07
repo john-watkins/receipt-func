@@ -12,3 +12,6 @@ functions:
     environment:
       write_debug: true
       combine_output: false
+    annotations:
+      topic: cron-function
+      schedule: "*/5 * * * *"

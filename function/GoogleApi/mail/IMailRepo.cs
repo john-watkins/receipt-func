@@ -8,6 +8,6 @@ namespace GoogleApi.mail
 {
     public interface IMailRepo
     {
-        Task<List<EmailMessage>> GetEmailMessages(string userId, string labelId);
+        Task<List<EmailMessage>> GetEmailMessages(string userId, string labelId, DateTime from);
     }
 }
